@@ -1,0 +1,8 @@
+src/**
+!src/
+!src/composer.json
+!src/app/
+!src/app/code/
+!src/app/code/**
+!src/app/design/
+!src/app/design/**
