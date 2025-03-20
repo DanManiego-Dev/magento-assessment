@@ -1,0 +1,23 @@
+<?php
+    /** 
+     * @var Magento\Framework\View\Element\Template $block 
+     * @var DevTeam\CustomBadges\ViewModel\Product\CustomBadge $customBadgeViewModel
+     * @var Magento\Framework\Escaper $escaper
+    **/
+
+    $customBadgeViewModel = $block->getData("product_custom_badge_view_model");
+    $productID = $block->getData("product_id");
+
+    // Checks if a product ID is provided
+    if(empty($productID)) {
+        $customBadge = $customBadgeViewModel->getCustomBadge(null);
+    } else {
+        $customBadge = $customBadgeViewModel->getCustomBadge($productID);
+    }
+?>
+
+<?php if(!empty($customBadge)): ?>
+    <div class="custom-badge">
+        <img class="custom-badge-image" src="<?= $escaper->escapeHtml($customBadge) ?>" />
+    </div>
+<?php endif ?>

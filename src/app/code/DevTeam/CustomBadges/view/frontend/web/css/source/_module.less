@@ -1,0 +1,34 @@
+& when(@media-common = true) {
+    .product-item-info {
+        position: relative;
+
+        .custom-badge {
+            width: 50px;
+            height: auto;
+        }
+    }
+
+    .product.media {
+        position: relative;
+
+        .custom-badge {
+            width: 75px;
+            height: auto;
+        }
+    }
+
+    .custom-badge {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        z-index: 10;
+        pointer-events: none;
+        border-radius: 3px;
+
+        .custom-badge-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 3px;
+        }
+    }
+}
