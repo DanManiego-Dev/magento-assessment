@@ -17,7 +17,7 @@ class CustomBadge implements ArgumentInterface
      * 
      * @param \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
      * @param \Magento\Catalog\Model\Product\Media\ConfigInterface $configInterface
-     * @param mixed $productID
+     * @param int|null $productID
      */
     public function __construct(
         private readonly ProductRepositoryInterface $productRepository,
@@ -31,8 +31,7 @@ class CustomBadge implements ArgumentInterface
      * @param int $ID
      * @return void
      */
-    public function setProductID(int $ID): void
-    {
+    public function setProductID(int $ID): void {
         $this->productID = $ID;
     }
     
@@ -42,15 +41,9 @@ class CustomBadge implements ArgumentInterface
      * @param int|null $productID
      * @return string|null
      */
-    public function getCustomBadge(?int $productID): ?string
-    {
-        // Checks if a product ID is provided
-        if(empty($productID)) {
-            $product = $this->productRepository->getById($this->productID);
-        } else {
-            $product = $this->productRepository->getById($productID);
-        }
-
+    public function getCustomBadge(?int $productID): ?string {
+        $productID = $productID ?? $this->productID;
+        $product = $this->productRepository->getById($productID);
         $customBadge = $product->getData(self::ATTRIBUTE_CODE);
 
         // Checks if no custom badge is found

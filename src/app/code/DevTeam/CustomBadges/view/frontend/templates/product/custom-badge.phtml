@@ -6,14 +6,8 @@
     **/
 
     $customBadgeViewModel = $block->getData("product_custom_badge_view_model");
-    $productID = $block->getData("product_id");
-
-    // Checks if a product ID is provided
-    if(empty($productID)) {
-        $customBadge = $customBadgeViewModel->getCustomBadge(null);
-    } else {
-        $customBadge = $customBadgeViewModel->getCustomBadge($productID);
-    }
+    $productID = $block->getData("product_id") ?? null;
+    $customBadge = $customBadgeViewModel->getCustomBadge($productID);
 ?>
 
 <?php if(!empty($customBadge)): ?>

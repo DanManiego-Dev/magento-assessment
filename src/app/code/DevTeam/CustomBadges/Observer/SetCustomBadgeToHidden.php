@@ -31,11 +31,12 @@ class SetCustomBadgeToHidden implements ObserverInterface
      * 
      * @param string $customBadgeImage
      * @param array $mediaGalleryImages
-     * @return bool|int|string
+     * @return int|bool|string
      */
-    private function getCustomBadgeID(string $customBadgeImage, array $mediaGalleryImages): int|bool|string
-    {
-        // Returns an array of the file names
+    private function getCustomBadgeID(
+        string $customBadgeImage, 
+        array $mediaGalleryImages
+    ): int|bool|string {
         $customBadgeCheck = array_map(
             fn($item) => $item['file'] === $customBadgeImage, 
             $mediaGalleryImages
@@ -45,23 +46,30 @@ class SetCustomBadgeToHidden implements ObserverInterface
     }
 
     /**
-     * Method for automatically hiding the custom badge on the frontend media gallery
+     * Method for saving and automatically hiding the custom badge on the frontend media gallery
      * 
      * @param \Magento\Catalog\Model\Product $product
      * @param string $mediaGalleryImageFile
+     * @param bool|null $isCustomBadgeDisabled
      * @return void
      */
-    private function hideCustomBadge(Product $product, string $mediaGalleryImageFile): ManagerInterface
-    {
-        $this->mediaGalleryProcessor->updateImage(
-            $product, 
-            $mediaGalleryImageFile, 
-            [
-                "disabled" => true,
-            ]
-        );
+    private function savingCustomBadge(
+        Product $product, 
+        string $mediaGalleryImageFile, 
+        ?bool $isCustomBadgeDisabled
+    ): void {
+        // Checks if the custom badge is not yet disabled
+        if($isCustomBadgeDisabled === false) {
+            $this->mediaGalleryProcessor->updateImage(
+                $product, 
+                $mediaGalleryImageFile, 
+                [
+                    "disabled" => true,
+                ]
+            );
+        }
 
-        return $this->messageManager->addSuccessMessage(__("Custom Badge has been saved."));
+        $this->messageManager->addSuccessMessage(__("Custom Badge has been saved."));
     }
 
     /**
@@ -71,35 +79,59 @@ class SetCustomBadgeToHidden implements ObserverInterface
      * @param string $customBadgeImageFile
      * @return bool
      */
-    private function imageRoleCheck(array $requestData, string $customBadgeImageFile): bool
-    {
-        $roleCheckArray = [
-            $requestData['image'],
-            $requestData['small_image'],
-            $requestData['thumbnail'],
-            $requestData['swatch_image']
-        ];
+    private function imageRoleCheck(
+        array $requestData, 
+        string $customBadgeImageFile
+    ): bool {
+        $roleCheckArray = array_map(
+            fn($item) => ($item === "no_selection") ? null : $item, 
+            [
+                $requestData['image'],
+                $requestData['small_image'],
+                $requestData['thumbnail'],
+                $requestData['swatch_image']
+            ]
+        );
 
         return in_array($customBadgeImageFile, $roleCheckArray);
     }
 
-    public function execute(Observer $observer)
-    {
-        $product = $observer->getEvent()->getData("product");
+    /**
+     * Summary of execute
+     * 
+     * @param \Magento\Framework\Event\Observer $observer
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @return void
+     */
+    public function execute(Observer $observer): void {
         $requestData = $this->request->getParam("product");
-        $customBadgeImageFile = $requestData['custom_badge'];
-        $mediaGalleryImages = $requestData["media_gallery"]["images"];
-        $customBadgeID = $this->getCustomBadgeID($customBadgeImageFile, $mediaGalleryImages);
-        $isCustomBadgeDisabled = (bool)$mediaGalleryImages[$customBadgeID]["disabled"];
+        $customBadgeImageFile = $requestData['custom_badge'] ?? null;
+        $mediaGalleryImages = $requestData["media_gallery"] ?? null;
 
         // Checks if the custom badge is given other roles
-        if($this->imageRoleCheck($requestData, $customBadgeImageFile)) {
-            throw new LocalizedException(__("The custom badge must not have other roles. Please try assigning the custom badge again."));
+        if(
+            !empty($customBadgeImageFile) 
+            && $this->imageRoleCheck($requestData, $customBadgeImageFile)
+        ) {
+            throw new LocalizedException(__("The custom badge must not have other roles. Please try again."));
         }
 
-        // Checks if a custom badge is already assigned and if it is already disabled
-        if(!empty($customBadgeID) && $isCustomBadgeDisabled === false) {
-            return $this->hideCustomBadge($product, $customBadgeImageFile);
+        // Checks if the media gallery is empty
+        if(!empty($mediaGalleryImages)) {
+            $mediaGalleryImages = $requestData["media_gallery"]["images"];
+            $customBadgeID = $this->getCustomBadgeID($customBadgeImageFile, $mediaGalleryImages);
+        }
+
+        // Checks if a custom badge is available
+        if(!empty($customBadgeID)) {
+            $product = $observer->getEvent()->getData("product");
+            $isCustomBadgeDisabled = (bool)$mediaGalleryImages[$customBadgeID]["disabled"];
+
+            $this->savingCustomBadge(
+                $product, 
+                $customBadgeImageFile, 
+                $isCustomBadgeDisabled
+            );
         }
     }
 }

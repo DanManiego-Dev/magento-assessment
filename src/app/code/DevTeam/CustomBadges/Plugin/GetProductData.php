@@ -25,8 +25,10 @@ class GetProductData
      * @param mixed $result
      * @return \Magento\Framework\Data\Collection
      */
-    public function afterGetGalleryImages(Gallery $subject, $result): Collection 
-    {
+    public function afterGetGalleryImages(
+        Gallery $subject, 
+        $result
+    ): Collection {
         $productID = $subject->getProduct()->getId();
         $this->customBadgeViewModel->setProductID((int)$productID);
         

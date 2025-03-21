@@ -35,8 +35,7 @@ class CustomBadgeAttribute implements DataPatchInterface
      * 
      * @return array
      */
-    public static function getDependencies(): array
-    {
+    public static function getDependencies(): array {
         return [];
     }
 
@@ -45,8 +44,7 @@ class CustomBadgeAttribute implements DataPatchInterface
      * 
      * @return array
      */
-    public function getAliases(): array
-    {
+    public function getAliases(): array {
         return [];
     }
 
@@ -55,13 +53,11 @@ class CustomBadgeAttribute implements DataPatchInterface
      * 
      * @return CustomBadgeAttribute
      */
-    public function apply(): self
-    {
+    public function apply(): self {
         // For the EAV attribute creation
-        $eavSetup = $this->eavSetupFactory
-            ->create([
-                "setup" => $this->moduleDataSetup
-            ]);
+        $eavSetup = $this->eavSetupFactory->create([
+            "setup" => $this->moduleDataSetup
+        ]);
 
         $eavSetup->addAttribute(
             self::ENTITY_TYPE, 
@@ -73,20 +69,16 @@ class CustomBadgeAttribute implements DataPatchInterface
                 "required" => false,
                 "system" => false,
                 "visible" => true,
-
-                // Enables the attribute to be available on the frontend
                 "visible_on_front" => true,
-
-                // Makes the attribute available for the listing page
-                "used_in_product_listing" => true
-            ]);
+                "used_in_product_listing" => true,
+            ]
+        );
 
         // Gets the eav attribute
-        $attribute = $this->config
-            ->getAttribute(
-                self::ENTITY_TYPE, 
-                self::ATTRIBUTE_CODE
-            );
+        $attribute = $this->config->getAttribute(
+            self::ENTITY_TYPE, 
+            self::ATTRIBUTE_CODE
+        );
 
         // Renders the input field inside the specified forms
         $attribute->setData('used_in_forms', [
