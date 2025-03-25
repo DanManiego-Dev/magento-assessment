@@ -10,7 +10,7 @@
     xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd"
 >
     <body>
-        <referenceBlock name="category.products.list" template="DevTeam_CustomBadges::product/list.phtml">
+        <referenceBlock name="category.products.list" template="Magento_Catalog::product/list.phtml">
             <block 
                 name="product.custom.badge" 
                 template="DevTeam_CustomBadges::product/custom-badge.phtml"

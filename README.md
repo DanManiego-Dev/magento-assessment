@@ -73,6 +73,13 @@ bin/magento module:enable DevTeam_CustomBadges
 bin/magento module:disable Magento_AdminAdobeImsTwoFactorAuth Magento_TwoFactorAuth
 ```
 
+### Enable the theme
+* Enable the ``Custom Theme`` for the ``app/design`` contents to render:
+    * Access the ``Login Panel``
+    * Go to ``Content > Configuration``
+    * Apply the ``Custom Theme`` on ``all views``
+
+
 ### Upgrade Magento Setup
 * Run the following command to ``apply the necessary database changes`` and ``flush the cache``:
 ```sh
