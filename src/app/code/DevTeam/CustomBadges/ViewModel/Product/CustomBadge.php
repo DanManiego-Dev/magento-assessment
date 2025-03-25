@@ -9,7 +9,10 @@ use Magento\Framework\View\Element\Block\ArgumentInterface;
 class CustomBadge implements ArgumentInterface
 {
     // Properties
-    CONST ATTRIBUTE_CODE = "custom_badge";
+    const ATTRIBUTE_CODE = "custom_badge";
+    private readonly ProductRepositoryInterface $productRepository;
+    private readonly ConfigInterface $configInterface;
+    private ?int $productID = null;
 
     // Methods
     /**
@@ -20,10 +23,14 @@ class CustomBadge implements ArgumentInterface
      * @param int|null $productID
      */
     public function __construct(
-        private readonly ProductRepositoryInterface $productRepository,
-        private readonly ConfigInterface $configInterface,
-        private ?int $productID = null
-    ) {}
+        ProductRepositoryInterface $productRepository,
+        ConfigInterface $configInterface,
+        ?int $productID = null,
+    ) {
+        $this->productRepository = $productRepository;
+        $this->configInterface = $configInterface;
+        $this->productID = $productID;
+    }
 
     /**
      * Sets the product ID

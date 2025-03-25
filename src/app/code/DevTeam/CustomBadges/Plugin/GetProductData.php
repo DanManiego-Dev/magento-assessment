@@ -8,6 +8,9 @@ use Magento\Framework\Data\Collection;
 
 class GetProductData
 {
+    // Properties
+    private readonly CustomBadge $customBadgeViewModel;
+
     // Methods
     /**
      * Summary of __construct
@@ -15,8 +18,10 @@ class GetProductData
      * @param \DevTeam\CustomBadges\ViewModel\Product\CustomBadge $customBadgeViewModel
      */
     public function __construct(
-        private readonly CustomBadge $customBadgeViewModel,
-    ) {}
+        CustomBadge $customBadgeViewModel,
+    ) {
+        $this->customBadgeViewModel = $customBadgeViewModel;
+    }
 
     /**
      * Method to get the product ID

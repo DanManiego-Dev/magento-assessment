@@ -14,6 +14,11 @@ class CustomBadgeAttribute implements DataPatchInterface
     const ATTRIBUTE_CODE = "custom_badge";
     const ENTITY_TYPE = "catalog_product";
 
+    private readonly Config $config;
+    private readonly Attribute $attribute;
+    private readonly EavSetupFactory $eavSetupFactory;
+    private readonly ModuleDataSetupInterface $moduleDataSetup;
+
     // Methods
     /**
      * Summary of __construct
@@ -24,11 +29,16 @@ class CustomBadgeAttribute implements DataPatchInterface
      * @param \Magento\Framework\Setup\ModuleDataSetupInterface $moduleDataSetup
      */
     public function __construct(
-        private readonly Config $config,
-        private readonly Attribute $attribute,
-        private readonly EavSetupFactory $eavSetupFactory,
-        private readonly ModuleDataSetupInterface $moduleDataSetup
-    ) {}
+        Config $config,
+        Attribute $attribute,
+        EavSetupFactory $eavSetupFactory,
+        ModuleDataSetupInterface $moduleDataSetup
+    ) {
+        $this->config = $config;
+        $this->attribute = $attribute;
+        $this->eavSetupFactory = $eavSetupFactory;
+        $this->moduleDataSetup = $moduleDataSetup;
+    }
 
     /**
      * Summary of getDependencies

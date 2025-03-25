@@ -12,6 +12,11 @@ use Magento\Framework\Exception\LocalizedException;
 
 class SetCustomBadgeToHidden implements ObserverInterface
 {
+    // Properties
+    private readonly RequestInterface $request;
+    private readonly Processor $mediaGalleryProcessor;
+    private readonly ManagerInterface $messageManager;
+
     // Methods
     /**
      * Summary of __construct
@@ -21,10 +26,14 @@ class SetCustomBadgeToHidden implements ObserverInterface
      * @param \Magento\Framework\Message\ManagerInterface $messageManager
      */
     public function __construct(
-        private readonly RequestInterface $request,
-        private readonly Processor $mediaGalleryProcessor,
-        private readonly ManagerInterface $messageManager,
-    ) {}
+        RequestInterface $request,
+        Processor $mediaGalleryProcessor,
+        ManagerInterface $messageManager,
+    ) {
+        $this->request = $request;
+        $this->mediaGalleryProcessor = $mediaGalleryProcessor;
+        $this->messageManager = $messageManager;
+    }
 
     /**
      * Method for returning the custom badge ID
